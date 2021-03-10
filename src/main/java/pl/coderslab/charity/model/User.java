@@ -21,7 +21,6 @@ public class User {
     private String firstName;
     private String lastName;
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role")
     private Set<Role> roles;
     private String username;
 
