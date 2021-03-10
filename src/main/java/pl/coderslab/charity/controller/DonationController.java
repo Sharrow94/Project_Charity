@@ -33,10 +33,9 @@ public class DonationController {
     }
 
     @PostMapping("/newDonation")
-    @ResponseBody
     public String addNewDonation(Donation donation){
         donationService.add(donation);
-        return "jest ok";
+        return "redirect:/donation/new";
 
     }
 }
