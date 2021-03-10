@@ -11,10 +11,4 @@ public class CharityApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication.run(CharityApplication.class, args);
     }
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(CharityApplication.class);
-    }
-
 }
