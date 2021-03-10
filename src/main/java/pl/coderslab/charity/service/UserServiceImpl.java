@@ -3,7 +3,7 @@ package pl.coderslab.charity.service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.coderslab.charity.model.Role;
-import pl.coderslab.charity.model.User;
+import pl.coderslab.charity.model.Users;
 import pl.coderslab.charity.repository.RoleRepository;
 import pl.coderslab.charity.repository.UserRepository;
 import java.util.Arrays;
@@ -24,12 +24,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void add(User user) {
+    public void add(Users user) {
         userRepository.save(user);
     }
 
     @Override
-    public void saveUser(User user) {
+    public void saveUser(Users user) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             Role userRole = roleRepository.findByName("ROLE_USER");
             user.setRoles(new HashSet<Role>(Arrays.asList(userRole)));
@@ -43,22 +43,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
+    public List<Users> getAll() {
         return userRepository.findAll();
     }
 
     @Override
-    public User getById(Long id) {
+    public Users getById(Long id) {
         return userRepository.findById(id).get();
     }
 
     @Override
-    public User findByEmail(String email) {
+    public Users findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
     @Override
-    public User findByUsername(String username) {
+    public Users findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 }

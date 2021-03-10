@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import pl.coderslab.charity.model.User;
+import pl.coderslab.charity.model.Users;
 import pl.coderslab.charity.service.UserService;
 
 @Controller
@@ -20,12 +20,12 @@ public class UserController {
 
     @RequestMapping("/register")
     public String register(Model model){
-        model.addAttribute("user",new User());
+        model.addAttribute("user",new Users());
         return "register";
     }
 
     @PostMapping("/registerDone")
-    public String registerDone(User user, @RequestParam("password2") String password2){
+    public String registerDone(Users user, @RequestParam("password2") String password2){
         if (!user.getPassword().equals(password2)){
             return "redirect:/user/register";
         }
