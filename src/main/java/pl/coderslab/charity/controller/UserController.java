@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.charity.model.Users;
 import pl.coderslab.charity.service.UserService;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/user")
@@ -25,18 +26,22 @@ public class UserController {
     }
 
     @PostMapping("/registerDone")
-    public String registerDone(Users user, @RequestParam("password2") String password2){
+    public String registerDone(Users user, @RequestParam("password2") String password2,HttpServletRequest request){
         if (!user.getPassword().equals(password2)){
             return "redirect:/user/register";
         }
-        user.setUsername();
         userService.add(user);
-        userService.saveUser(user);
-        return "redirect:/user/login";
+        userService.saveUser(user,getSiteURL(request));
+        return "plzDoVerify";
     }
 
     @RequestMapping("/login")
     public String login(){
         return "login";
+    }
+
+    private String getSiteURL(HttpServletRequest request) {
+        String siteURL = request.getRequestURL().toString();
+        return siteURL.replace(request.getServletPath(), "");
     }
 }

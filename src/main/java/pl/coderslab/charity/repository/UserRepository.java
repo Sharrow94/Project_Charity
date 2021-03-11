@@ -8,4 +8,5 @@ import pl.coderslab.charity.model.Users;
 public interface UserRepository extends JpaRepository<Users,Long> {
     Users findByEmail(String email);
     Users findByUsername(String username);
+    Users findByVerifyCode(String verifyCode);
 }
