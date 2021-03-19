@@ -2,8 +2,10 @@ package pl.coderslab.charity.service;
 
 import org.springframework.stereotype.Service;
 import pl.coderslab.charity.model.Donation;
+import pl.coderslab.charity.model.Users;
 import pl.coderslab.charity.repository.DonationRepository;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DonationServiceImpl implements DonationService {
@@ -36,11 +38,16 @@ public class DonationServiceImpl implements DonationService {
 
     @Override
     public Long getSumBags() {
-        return donationRepository.getSumBags();
+        return donationRepository.getSumBags().orElse(0L);
     }
 
     @Override
     public Long countDonations() {
         return donationRepository.countDonations();
+    }
+
+    @Override
+    public List<Donation> findAllByUser(Users user) {
+        return donationRepository.findAllByUser(user);
     }
 }

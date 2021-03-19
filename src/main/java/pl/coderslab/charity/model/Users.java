@@ -3,10 +3,9 @@ package pl.coderslab.charity.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.bytebuddy.utility.RandomString;
-import org.hibernate.validator.constraints.UniqueElements;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 import java.util.Set;
 
 @Entity
@@ -17,7 +16,9 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Email
+    @Column(unique = true)
     private String email;
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$")
     private String password;
     private String firstName;
     private String lastName;

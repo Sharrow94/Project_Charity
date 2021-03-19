@@ -10,11 +10,11 @@
     <h2>Zaloguj się</h2>
     <form class="user" method="post">
         <div class="form-group">
-            <input type="username" name="username" placeholder="Email" />
+            <input type="email" name="username" placeholder="Email" />
         </div>
         <div class="form-group">
             <input type="password" name="password" placeholder="Hasło" />
-            <a href="#" class="btn btn--small btn--without-border reset-password">Przypomnij hasło</a>
+            <a href="/resetPassword/step1" class="btn btn--small btn--without-border reset-password">Przypomnij hasło</a>
         </div>
 
         <div class="form-group form-group--buttons">

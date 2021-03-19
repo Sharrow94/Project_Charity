@@ -25,7 +25,7 @@
     </div>
 </section>
 
-<section class="steps">
+<section class="steps" id="one">
     <h2>Wystarczą 4 proste kroki</h2>
 
     <div class="steps--container">
@@ -55,7 +55,7 @@
 </section>
 
 <section class="about-us">
-    <div class="about-us--text">
+    <div class="about-us--text" id="two">
         <h2>O nas</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptas vitae animi rem pariatur incidunt libero
             optio esse quisquam illo omnis.</p>
@@ -65,7 +65,7 @@
     </div>
 </section>
 
-<section class="help">
+<section class="help" id="third">
     <h2>Komu pomagamy?</h2>
 
     <!-- SLIDE 1 -->

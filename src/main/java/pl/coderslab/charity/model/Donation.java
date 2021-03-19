@@ -27,6 +27,10 @@ public class Donation {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate pickUpDate;
     private LocalTime pickUpTime;
+    private LocalDate createDate;
     private String pickUpComment;
     private String phoneNumber;
+    @ManyToOne
+    private Users user;
+    private boolean received=false;
 }

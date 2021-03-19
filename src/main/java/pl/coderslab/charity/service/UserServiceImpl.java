@@ -1,18 +1,13 @@
 package pl.coderslab.charity.service;
 
 import lombok.SneakyThrows;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.coderslab.charity.model.Role;
 import pl.coderslab.charity.model.Users;
 import pl.coderslab.charity.repository.RoleRepository;
 import pl.coderslab.charity.repository.UserRepository;
-import javax.mail.internet.MimeMessage;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,13 +15,13 @@ public class UserServiceImpl implements UserService {
     private  final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-    private final JavaMailSender mailSender;
+    private final MailService mailService;
 
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, RoleRepository roleRepository, JavaMailSender mailSender) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, RoleRepository roleRepository, MailService mailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
-        this.mailSender = mailSender;
+        this.mailService = mailService;
     }
 
     @Override
@@ -40,10 +35,9 @@ public class UserServiceImpl implements UserService {
     public void saveUser(Users user, String siteURL) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             Role userRole = roleRepository.findByName("ROLE_USER");
-            user.setRoles(new HashSet<Role>(Arrays.asList(userRole)));
+            user.setRoles(new HashSet<>(Collections.singletonList(userRole)));
             userRepository.save(user);
-            sendVerificationEmail(user,siteURL);
-
+            mailService.sendVerificationEmail(user,siteURL);
     }
 
     @Override
@@ -71,39 +65,61 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username);
     }
 
-    @SneakyThrows
-    @Override
-    public void sendVerificationEmail(Users user, String siteURL){
-            String toAddress = user.getEmail();
-            String fromAddress = "charity.app@interia.pl";
-            String senderName = "CharityApp01";
-            String subject = "Please verify your registration";
-            String content = "Dear [[name]],<br>"
-                    + "Please click the link below to verify your registration:<br>"
-                    + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
-                    + "Thank you,<br>"
-                    + "CharityApp01.";
-
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message);
-
-            helper.setFrom(fromAddress, senderName);
-            helper.setTo(toAddress);
-            helper.setSubject(subject);
-
-            content = content.replace("[[name]]", user.getFirstName());
-            String verifyURL = siteURL + "/verify/" + user.getVerifyCode();
-
-            content = content.replace("[[URL]]", verifyURL);
-
-            helper.setText(content, true);
-            mailSender.send(message);
-    }
-
     @Override
     public void verifyAcc(String verifyCode) {
         Users user=userRepository.findByVerifyCode(verifyCode);
         user.setEnabled(true);
+        user.setVerifyCode(null);
         userRepository.save(user);
     }
+
+    @Override
+    public List<Users>findAllByRoleAdmin() {
+        return userRepository.findAllByRoleAdmin();
+    }
+
+    @Override
+    public List<Users> findAllByRoleUser() {
+        return userRepository.findAllByRoleUser();
+    }
+
+    @Override
+    public void makeAdmin(Long id) {
+        Users user=userRepository.findById(id).get();
+        Set<Role>userRoles=user.getRoles();
+        if (userRoles.contains(roleRepository.findByName("ROLE_ADMIN"))){
+            userRoles.remove(roleRepository.findByName("ROLE_ADMIN"));
+            userRoles.add(roleRepository.findByName("ROLE_USER"));
+        }else{
+            userRoles.add(roleRepository.findByName("ROLE_ADMIN"));
+            userRoles.remove(roleRepository.findByName("ROLE_USER"));
+        }
+        user.setRoles(userRoles);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void blockUser(Long id) {
+        Users user = userRepository.findById(id).get();
+        user.setEnabled(!user.isEnabled());
+        userRepository.save(user);
+    }
+
+    @Override
+    public Users findByVerifyCode(String verifyCode) {
+        return userRepository.findByVerifyCode(verifyCode);
+    }
+
+    @Override
+    public void changePassword(Users user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        user.setVerifyCode(null);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void editUser(Users user) {
+        userRepository.save(user);
+    }
+
 }

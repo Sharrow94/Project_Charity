@@ -1,9 +1,6 @@
 package pl.coderslab.charity.service;
 
 import pl.coderslab.charity.model.Users;
-
-import javax.mail.MessagingException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public interface UserService {
@@ -15,7 +12,13 @@ public interface UserService {
     Users getById(Long id);
     Users findByEmail(String email);
     Users findByUsername(String username);
-    void sendVerificationEmail(Users user,String siteURL);
     void verifyAcc(String verifyCode);
+    List<Users> findAllByRoleAdmin();
+    List<Users>findAllByRoleUser();
+    void makeAdmin(Long id);
+    void blockUser(Long id);
+    Users findByVerifyCode(String verifyCode);
+    void changePassword(Users user,String password);
+    void editUser(Users user);
 
 }
